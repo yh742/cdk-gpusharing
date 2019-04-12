@@ -56,9 +56,14 @@ systemctl enable gpushare-sche-extender.service
 
 # edit original scheduler
 curl -O https://raw.githubusercontent.com/AliyunContainerService/gpushare-scheduler-extender/master/config/scheduler-policy-config.json
+sed -i 's/:32766/:39999/' scheduler-policy-config.json 
 mv scheduler-policy-config.json /var/snap/kube-scheduler/
 path=$(find /var/snap/kube-scheduler | grep -i args)
-echo --policy-config-file=/var/snap/kube-scheduler/scheduler-policy-config.json >> $path
+cat $path | grep -i policy-config-file
+if [ ! $? -eq 0 ] 
+then  
+   echo --policy-config-file=/var/snap/kube-scheduler/scheduler-policy-config.json >> $path
+fi
 systemctl restart snap.kube-scheduler.daemon
 
 # get device plugin 
