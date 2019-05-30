@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nbody
+spec:
+  parallelism: 3
+  template: # define the pods specifications
+    spec:
+      hostIPC: true
+      containers:
+      - name: nbody
+        image: yhseanhsu/gpu-nbody
+        command: ["./5_Simulations/nbody/nbody"]
+        args: ["-benchmark", "-numbodies=700160"]
+        volumeMounts:
+           - mountPath: "/tmp/nvidia-mps"
+             name: test-volume
+        resources:
+          limits:
+            aliyun.com/gpu-mem: 3
+      volumes:
+      - name: test-volume
+        hostPath:
+           path: /tmp/nvidia-mps
+           type: Directory
+      restartPolicy: Never

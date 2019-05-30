@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nbody
+spec:
+  parallelism: 3
+  template: # define the pods specifications
+    spec:
+      containers:
+      - name: binpack-1
+        image: yhseanhsu/gpu-nbody
+        command: ["./5_Simulations/nbody/nbody"]
+        args: ["-benchmark", "-numbodies=700160"]
+        resources:
+          limits:
+            aliyun.com/gpu-mem: 3 # this is in GB
+      restartPolicy: Never
